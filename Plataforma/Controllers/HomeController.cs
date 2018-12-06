@@ -4,7 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Plataforma.Models;
+using Plataforma.Lib.Models;
+using Plataforma.Lib.ViewModels;
 
 namespace Plataforma.Controllers
 {

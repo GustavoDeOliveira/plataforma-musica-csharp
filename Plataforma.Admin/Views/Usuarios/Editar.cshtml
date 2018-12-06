@@ -1,0 +1,116 @@
+﻿@model Plataforma.Admin.Models.UsuarioEditarViewModel
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<h2>Editar</h2>
+
+<h4>Usuario</h4>
+<hr />
+
+<div class="panel-group">
+    <form asp-action="Editar">
+        <!-- PAINEL DADOS -->
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#painel-dados">Dados Básicos</a>
+                </h4>
+            </div>
+            <div id="painel-dados" class="panel-collapse collapse">
+                <div class="panel-body">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Usuario.Nome" class="control-label"></label>
+                        <input asp-for="Usuario.Nome" class="form-control" />
+                        <span asp-validation-for="Usuario.Nome" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Usuario.Email" class="control-label"></label>
+                        <input asp-for="Usuario.Email" class="form-control" />
+                        <span asp-validation-for="Usuario.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Usuario.Senha" class="control-label"></label>
+                        <input asp-for="Usuario.Senha" class="form-control" />
+                        <span asp-validation-for="Usuario.Senha" class="text-danger"></span>
+                    </div>
+                    @if (Model.Usuario.ModificadoEm != null)
+                    {
+                        <div class="form-group">
+                            <label asp-for="Usuario.ModificadoEm" class="control-label"></label>
+                            <input type="text" value="@Model.Usuario.ModificadoEm" readonly="readonly" class="form-control" />
+                            <span asp-validation-for="Usuario.ModificadoEm" class="text-danger"></span>
+                        </div>
+                    }
+                    @if (Model.Usuario.CriadoEm != null)
+                    {
+                        <div class="form-group">
+                            <label asp-for="Usuario.CriadoEm" class="control-label"></label>
+                            <input type="text" value="@Model.Usuario.CriadoEm" readonly="readonly" class="form-control" />
+                            <span asp-validation-for="Usuario.CriadoEm" class="text-danger"></span>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input asp-for="Usuario.Admin" /> @Html.DisplayNameFor(model => model.Usuario.Admin)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input asp-for="Usuario.Ativo" /> @Html.DisplayNameFor(model => model.Usuario.Ativo)
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel-footer">
+                    <div class="form-group pull-right">
+                        <input type="hidden" asp-for="Usuario.Id" />
+                        <input type="submit" value="Salvar" class="btn btn-success" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- PAINEL PREFERÊNCIAS -->
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#painel-prefs">Preferências</a>
+                </h4>
+            </div>
+            <div id="painel-prefs" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <input type="text" class="form-control" rows="3" value="@Model.Preferencias" />
+                    <input type="hidden" id="etiquetas" value="@Model.Etiquetas" />
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('input').tagsinput({
+                typeahead: {
+                    source: $('#etiquetas').val().split(','),
+                    afterSelect: function () {
+                        this.$element[0].value = '';
+                    }
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Músicas";
+}
+
+<h2>Músicas</h2>
+
+<div class="row">
+    <div class="col-md-8 col-md-push-2 espacamento">
+        <button id="botao-recarregar" class="btn btn-default btn-block">Recarregar</button>
+    </div>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Autor(es)</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+@section Scripts
+    {
+    <script type="text/javascript">
+
+        $(document).ready(() => {
+            var dtt = $('table').DataTable({
+                ajax: '/musicas/listar',
+                columns: [
+                    { data: 'nome' },
+                    {
+                        data: 'autores',
+                        render: (dados) => {
+                            var col = '';
+                            dados.forEach((dado) => {
+                                col += `<a href="@Url.Action("Detalhes", "Usuarios")/${dado.id}">${dado.nome}</a>`;
+                            });
+                            return col;
+                        }
+                    }
+                ],
+                drawCallback: () => {
+                    $('#botao-recarregar').html('Recarregar').removeAttr('disabled');
+                }
+            });
+
+            $('#botao-recarregar').on('click', (evt) => {
+                evt.currentTarget.innerHTML = 'Recarregando...';
+                evt.currentTarget.attributes['disabled'] = 'disabled';
+                dtt.draw();
+            });
+        });
+
+    </script>
+}
+

@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Usuários";
+}
+
+<h2>Músicas</h2>
+
+<div class="row">
+    <div class="col-md-8 col-md-push-2 espacamento">
+        <button id="botao-recarregar" class="btn btn-default btn-block">Recarregar</button>
+    </div>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th width="50">Ativo</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+@section Scripts
+    {
+    <script type="text/javascript">
+
+        $(document).ready(() => {
+            var dtt = $('table').DataTable({
+                ajax: '/usuarios/listar',
+                columns: [
+                    { data: 'nome' },
+                    { data: 'email' },
+                    {
+                        data: 'ativo',
+                        render: (data) => {
+                            return `<form action="@Url.Action("Ativacao")" method="POST"><button type="button" class="btn" ><i class="fa fa-power-off"></i></button></form>`;
+                        }
+                    },
+                    {
+                        data: 'id',
+                        render: (data) => {
+                            return `<a href="@Url.Action("Editar")/${data}" class="btn btn-warning"><i class="fa fa-pen"></i></a>`;
+                        }
+                    }
+                ],
+                createdRow: (row, data) => {
+                    var $row = $(row);
+                    if (data.ativo) {
+                        $row.find('button').addClass("btn-success");
+                    } else {
+                        $row.find('button').addClass("btn-danger");
+                    }
+                    $row.find('button').on('click', function () {
+                        var $this = $(this);
+                        var $form = $this.closest('form');
+                        $form.on('submit', (evt) => evt.preventDefault());
+                        $.ajax({
+                            url: $form.attr('action'),
+                            method: $form.attr('method'),
+                            data: { Id: data.id, Ativo: $this.hasClass("btn-danger") },
+                            success: (dados) => {
+                                if (dados.sucesso)
+                                    $this.toggleClass("btn-success").toggleClass("btn-danger");
+                            }
+                        });
+                    });
+                },
+                drawCallback: () => {
+                    $('#botao-recarregar').html('Recarregar').removeAttr('disabled');
+                }
+            });
+
+            $('#botao-recarregar').on('click', (evt) => {
+                evt.currentTarget.innerHTML = 'Recarregando...';
+                evt.currentTarget.attributes['disabled'] = 'disabled';
+                dtt.draw();
+            });
+        });
+
+    </script>
+}
+
